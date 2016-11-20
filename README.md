@@ -19,25 +19,28 @@ $('.summernote').summernote({
 		onFileUpload: function(files, text) {
 			var data = new FormData();
 			var that = this;
+			
+			// Uploading just the first selected file for now
+			// @todo Multiple file upload example
 			data.append("file", files[0]);
 
 			$.ajax ({
 				data: data,
 				type: 'post',
-				dataType: 'json',
 				url: 'https://path.to/your/upload/process',
 				cache: false,
 				contentType: false,
 				processData: false,
 				success: function(response) {
+				    /**
+					 * In this example the file uploader returned the filename
+					 * and relative path to the file.
+					 */
 					$(that).summernote('createLink', {
-						text: text,
+						text: text || response.filename,
 						url: response.url,
 						newWindow: true
 					});
-				},
-				error: function(response) {
-					console.log(response);
 				}
 			});
 		}

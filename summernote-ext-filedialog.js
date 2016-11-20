@@ -20,33 +20,28 @@
         var lang = options.langInfo;
         var callbacks = options.callbacks;
 
-        // add hello button
         context.memo('button.file', function () {
             // create button
-            var button = ui.button({
-                contents: '<i class="fa fa-file"/>',
+            return ui.button({
+                contents: '<i class="fa fa-paperclip" />',
                 tooltip: lang.file.insert,
                 click: context.createInvokeHandler('fileDialog.show')
-            });
-
-            // create jQuery object from button instance.
-            var $btn = button.render();
-            return $btn;
+            }).render();
         });
 
-        // You can create elements for plugin
         this.initialize = function () {
             var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-            var body = '<div class="form-group note-group-select-from-files">' +
-                '<label>' + lang.file.selectFromFiles + '</label>' +
-                '<input class="note-file-input form-control" type="file" name="files" multiple="multiple" />' +
-                '</div>' +
-                '<div class="form-group" style="overflow:auto;">' +
-                '<label>' + lang.file.text + '</label>' +
-                '<input class="note-file-text form-control col-md-12" type="text" />' +
-                '</div>';
             var footer = '<button href="#" class="btn btn-primary note-file-btn">' + lang.file.insert + '</button>';
+            var body =   '<div class="form-group note-group-select-from-files">' +
+                             '<label>' + lang.file.selectFromFiles + '</label>' +
+                             '<input class="note-file-input form-control" type="file" name="files" multiple="multiple" />' +
+                         '</div>' +
+                         '<div class="form-group" style="overflow:auto;">' +
+                             '<label>' + lang.file.text + '</label>' +
+                             '<input class="note-file-text form-control col-md-12" type="text" />' +
+                         '</div>';
+
 
             this.$dialog = ui.dialog({
                 title: lang.file.insert,
@@ -64,7 +59,6 @@
                 context.invoke('editor.restoreRange');
 
                 if (callbacks.onFileUpload) {
-                    console.log(files);
                     context.triggerEvent('file.upload', files, text);
                 } else {
                     console.log('onFileUpload not defined');
@@ -74,9 +68,6 @@
             });
         };
 
-        /**
-         * Show file dialog
-         */
         this.showFileDialog = function () {
             return $.Deferred(function (deferred) {
                 var $fileInput = self.$dialog.find('.note-file-input'),
@@ -93,7 +84,7 @@
                 ui.onDialogHidden(self.$dialog, function () {
                     $fileBtn.off('click');
 
-                    // Cloning $fileInput to clear element.
+                    // Cloning $fileInput and $fileText to clear them.
                     $fileInput.replaceWith($fileInput.clone().val(''));
                     $fileText.replaceWith($fileText.clone().val(''));
 
@@ -106,14 +97,11 @@
             });
         };
 
-        /**
-         * Called when editor is destroyed by $('..').summernote('destroy');
-         */
         this.destroy = function () {
             this.$dialog.remove();
             this.$dialog = null;
         };
-    }
+    };
 
     // Extend summernote
     $.extend(true, $.summernote, {
@@ -121,7 +109,6 @@
             fileDialog: FileDialog
         },
 
-        // add localization texts
         lang: {
             'en-US': {
                 file: {
